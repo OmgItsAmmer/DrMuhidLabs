@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { getCourses } from '@/lib/actions/courses'
 
 const CARD_COLORS = ['card-pink', 'card-orange', 'card-blue', 'card-purple', 'card-cyan'] as const
@@ -12,10 +13,19 @@ export default async function LandingPage() {
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#1a1a1d]/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="text-xl font-bold text-white">
-            DR Muhid Lab
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative h-10 w-10">
+              <Image
+                src="/images/logo.png"
+                alt="Muhid Saeed Lectures logo"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
+            <span className="text-xl font-bold text-white">DR Muhid Lab</span>
           </Link>
-          <div className="hidden items-center gap-8 md:flex">
+          {/* <div className="hidden items-center gap-8 md:flex">
             <Link href="/" className="text-sm font-medium text-white/90 hover:text-white">
               Home
             </Link>
@@ -28,7 +38,7 @@ export default async function LandingPage() {
             <Link href="/#courses" className="text-sm font-medium text-white/70 hover:text-white">
               Blog
             </Link>
-          </div>
+          </div> */}
           <Link
             href="/login"
             className="rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/25 transition hover:from-orange-600 hover:to-orange-700 hover:shadow-orange-500/30"
@@ -63,7 +73,7 @@ export default async function LandingPage() {
                   <p className="mt-1 text-sm text-zinc-500">Career Courses</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold text-white">1M+</p>
+                  <p className="text-3xl font-bold text-white">100+</p>
                   <p className="mt-1 text-sm text-zinc-500">Our Students</p>
                 </div>
               </div>
@@ -106,7 +116,7 @@ export default async function LandingPage() {
       </section>
 
       {/* Course browse */}
-      <section id="courses" className="border-t border-white/5 py-16 lg:py-24">
+      {/* <section id="courses" className="border-t border-white/5 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-white sm:text-4xl">
             Browse Top Essential Career Courses
@@ -171,7 +181,7 @@ export default async function LandingPage() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   )
 }

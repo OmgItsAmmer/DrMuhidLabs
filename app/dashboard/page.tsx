@@ -14,14 +14,22 @@ export default async function DashboardPage() {
   const { courses } = await getCourses()
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-white sm:text-4xl">
-          Browse Top Essential Career Courses
-        </h1>
-        <p className="mt-2 text-zinc-400">
-          Pick a course and start learning today
-        </p>
+    <div className="space-y-8">
+      <div className="flex items-center gap-3">
+        <div className="relative h-12 w-12">
+          <Image
+            src="/images/logo.png"
+            alt="Muhid Saeed Lectures logo"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <div>
+          <h1 className="text-2xl font-semibold text-white">Course Dashboard</h1>
+          <p className="text-sm text-zinc-400">
+            Browse and manage the latest lectures from DR Muhid Lab.
+          </p>
+        </div>
       </div>
 
       {courses.length === 0 ? (
