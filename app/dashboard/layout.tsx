@@ -18,41 +18,37 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-white shadow-sm dark:bg-gray-800">
+    <div className="min-h-screen bg-[#1a1a1d]">
+      <nav className="sticky top-0 z-40 border-b border-white/5 bg-[#1a1a1d]/95 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between">
-            <div className="flex">
-              <Link href="/dashboard" className="flex items-center">
-                <span className="text-xl font-bold text-indigo-600">
-                  DR Muhid Lab
-                </span>
+          <div className="flex h-16 items-center justify-between">
+            <div className="flex items-center gap-10">
+              <Link href="/dashboard" className="text-xl font-bold text-white">
+                Dr Muhid's Lectures
               </Link>
-              <div className="ml-10 flex space-x-8">
+              <div className="hidden gap-8 sm:flex">
                 <Link
                   href="/dashboard"
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-900 hover:border-indigo-500 dark:text-white"
+                  className="text-sm font-medium text-white/90 hover:text-white"
                 >
                   All Courses
                 </Link>
                 <Link
                   href="/dashboard/my-courses"
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-900 hover:border-indigo-500 dark:text-white"
+                  className="text-sm font-medium text-white/70 hover:text-white"
                 >
                   My Courses
                 </Link>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {userData.profile?.full_name || userData.user.email}
-                </span>
-              </div>
+            <div className="flex items-center gap-4">
+              <span className="max-w-[160px] truncate text-sm text-zinc-400">
+                {userData.profile?.full_name || userData.user.email}
+              </span>
               <form action={signOut}>
                 <button
                   type="submit"
-                  className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
+                  className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10"
                 >
                   Sign out
                 </button>

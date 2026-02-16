@@ -14,28 +14,16 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+    <div className="flex min-h-screen items-center justify-center bg-[#1a1a1d]">
       <div className="text-center">
-        <h1 className="text-6xl font-bold text-red-600 dark:text-red-400">
-          Error
-        </h1>
-        <p className="mt-4 text-xl text-gray-900 dark:text-white">
-          Something went wrong!
-        </p>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          {error.message || 'An unexpected error occurred'}
-        </p>
-        <div className="mt-6 flex justify-center space-x-4">
-          <button
-            onClick={() => reset()}
-            className="inline-block rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700"
-          >
+        <h1 className="text-6xl font-bold text-red-400">Error</h1>
+        <p className="mt-4 text-xl text-white">Something went wrong!</p>
+        <p className="mt-2 text-sm text-zinc-400">{error.message || 'An unexpected error occurred'}</p>
+        <div className="mt-6 flex justify-center gap-4">
+          <button onClick={() => reset()} className="btn-gradient rounded-xl px-6 py-3 text-sm font-semibold">
             Try again
           </button>
-          <a
-            href="/"
-            className="inline-block rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
-          >
+          <a href="/" className="inline-block rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10">
             Go home
           </a>
         </div>

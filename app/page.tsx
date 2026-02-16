@@ -1,17 +1,16 @@
 import { redirect } from 'next/navigation'
 import { getUser } from '@/lib/actions/auth'
+import LandingPage from '@/components/landing/LandingPage'
 
 export default async function Home() {
   const userData = await getUser()
 
-  if (!userData) {
-    redirect('/login')
-  }
-
-  // Redirect based on role
-  if (userData.profile?.role === 'admin') {
-    redirect('/admin')
-  } else {
+  if (userData) {
+    if (userData.profile?.role === 'admin') {
+      redirect('/admin')
+    }
     redirect('/dashboard')
   }
+
+  return <LandingPage />
 }

@@ -6,11 +6,23 @@ import Image from 'next/image'
 import CourseModal from '@/components/admin/CourseModal'
 import type { Course } from '@/lib/types'
 
+const DESCRIPTION_LINES = 2
+
 export default function ManageCoursesPage() {
   const [courses, setCourses] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null)
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+
+  function toggleDescription(courseId: string) {
+    setExpandedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(courseId)) next.delete(courseId)
+      else next.add(courseId)
+      return next
+    })
+  }
 
   useEffect(() => {
     loadCourses()
@@ -48,97 +60,118 @@ export default function ManageCoursesPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-teal-500 border-r-transparent" />
+          <p className="text-sm text-slate-400">Loading courses...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
+    <div>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Manage Courses
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Add, edit, or delete courses
-          </p>
+          <h1 className="text-2xl font-bold text-white sm:text-3xl">Manage Courses</h1>
+          <p className="mt-1 text-sm text-slate-400">Add, edit, or delete courses</p>
         </div>
         <button
           onClick={handleAddNew}
-          className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700"
+          className="rounded-xl bg-teal-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-500/25 transition hover:bg-teal-600"
         >
           Add Course
         </button>
       </div>
 
       {courses.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 dark:text-gray-400">No courses yet.</p>
+        <div className="rounded-2xl border border-slate-700/50 bg-slate-800/30 py-16 text-center">
+          <p className="text-slate-400">No courses yet.</p>
+          <button
+            onClick={handleAddNew}
+            className="mt-4 rounded-xl bg-teal-500/20 px-4 py-2 text-sm font-medium text-teal-400 ring-1 ring-teal-500/30 hover:bg-teal-500/30"
+          >
+            Add your first course
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => (
-            <div
-              key={course.id}
-              className="overflow-hidden rounded-lg bg-white shadow-md dark:bg-gray-800"
-            >
-              <div className="relative aspect-video w-full overflow-hidden bg-gray-200 dark:bg-gray-700">
-                {course.thumbnail_url ? (
-                  <Image
-                    src={course.thumbnail_url}
-                    alt={course.title}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <svg
-                      className="h-12 w-12 text-gray-400"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {courses.map((course) => {
+            const desc = course.description || 'No description'
+            const isExpanded = expandedIds.has(course.id)
+            const needsReadMore = desc.length > 80
+
+            return (
+              <div
+                key={course.id}
+                className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-800/50 shadow-xl transition hover:border-slate-600"
+              >
+                <div className="relative aspect-video w-full shrink-0 overflow-hidden bg-slate-700/50">
+                  {course.thumbnail_url ? (
+                    <Image
+                      src={course.thumbnail_url}
+                      alt={course.title}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <svg
+                        className="h-12 w-12 text-slate-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+                <div className="flex min-h-0 flex-1 flex-col p-5">
+                  <h3 className="text-lg font-semibold text-white">{course.title}</h3>
+                  <div className="mt-2 min-h-[2.5rem]">
+                    <p
+                      className="text-sm text-slate-400"
+                      style={isExpanded ? undefined : { display: '-webkit-box', WebkitLineClamp: DESCRIPTION_LINES, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
+                      {desc}
+                    </p>
+                    {needsReadMore && (
+                      <button
+                        type="button"
+                        onClick={() => toggleDescription(course.id)}
+                        className="mt-1 text-xs font-medium text-teal-400 hover:text-teal-300"
+                      >
+                        {isExpanded ? 'Show less' : 'Read more'}
+                      </button>
+                    )}
                   </div>
-                )}
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {course.title}
-                </h3>
-                <p className="mt-2 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">
-                  {course.description || 'No description'}
-                </p>
-                {course.price && (
-                  <p className="mt-2 text-lg font-bold text-indigo-600 dark:text-indigo-400">
-                    ${course.price}
-                  </p>
-                )}
-                <div className="mt-4 flex space-x-2">
-                  <button
-                    onClick={() => handleEdit(course)}
-                    className="flex-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(course.id)}
-                    className="flex-1 rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700"
-                  >
-                    Delete
-                  </button>
+                  {course.price != null && (
+                    <p className="mt-2 text-lg font-bold text-teal-400">${course.price}</p>
+                  )}
+                  <div className="mt-auto flex gap-2 pt-4">
+                    <button
+                      onClick={() => handleEdit(course)}
+                      className="flex-1 rounded-lg bg-teal-500/20 py-2 text-sm font-semibold text-teal-400 ring-1 ring-teal-500/30 transition hover:bg-teal-500/30"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(course.id)}
+                      className="flex-1 rounded-lg bg-red-500/20 py-2 text-sm font-semibold text-red-400 ring-1 ring-red-500/30 transition hover:bg-red-500/30"
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

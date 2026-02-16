@@ -1,6 +1,7 @@
 import { getUser, signOut } from '@/lib/actions/auth'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { AdminNavMobile, AdminSidebar } from '@/components/admin/AdminNav'
 
 export default async function AdminLayout({
   children,
@@ -18,59 +19,50 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <nav className="bg-white shadow-sm dark:bg-gray-800">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between">
-            <div className="flex">
-              <Link href="/admin" className="flex items-center">
-                <span className="text-xl font-bold text-indigo-600">
-                  DR Muhid Lab - Admin
-                </span>
-              </Link>
-              <div className="ml-10 flex space-x-8">
-                <Link
-                  href="/admin/courses"
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-900 hover:border-indigo-500 dark:text-white"
-                >
-                  Manage Courses
-                </Link>
-                <Link
-                  href="/admin/verify"
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-900 hover:border-indigo-500 dark:text-white"
-                >
-                  Verify Payments
-                </Link>
-                <Link
-                  href="/admin/customers"
-                  className="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-900 hover:border-indigo-500 dark:text-white"
-                >
-                  Manage Customers
-                </Link>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
-                  Admin
-                </span>
-                <span className="ml-3 text-sm text-gray-700 dark:text-gray-300">
-                  {userData.profile?.full_name || userData.user.email}
-                </span>
-              </div>
-              <form action={signOut}>
-                <button
-                  type="submit"
-                  className="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
-                >
-                  Sign out
-                </button>
-              </form>
-            </div>
+    <div className="min-h-screen bg-[#0f172a]">
+      {/* Top bar: clear Admin identity */}
+      <header className="sticky top-0 z-50 border-b border-slate-700/50 bg-slate-900/95 backdrop-blur-md">
+        <div className="flex h-14 items-center justify-between px-4 lg:px-6">
+          <div className="flex items-center gap-4">
+            <Link href="/admin" className="flex items-center gap-2">
+              <span className="text-lg font-bold text-white">DR Muhid Lab</span>
+              <span className="rounded-md bg-teal-500/20 px-2.5 py-0.5 text-xs font-semibold uppercase tracking-wider text-teal-400 ring-1 ring-teal-500/30">
+                Admin
+              </span>
+            </Link>
+      
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="max-w-[140px] truncate text-sm text-slate-400">
+              {userData.profile?.full_name || userData.user.email}
+            </span>
+            <form action={signOut}>
+              <button
+                type="submit"
+                className="rounded-lg border border-slate-600 bg-slate-800/80 px-3 py-1.5 text-sm font-medium text-slate-300 transition hover:border-teal-500/50 hover:bg-slate-700 hover:text-white"
+              >
+                Sign out
+              </button>
+            </form>
           </div>
         </div>
-      </nav>
-      <main>{children}</main>
+      </header>
+
+      <div className="flex">
+        {/* Sidebar (desktop) */}
+        <aside className="fixed left-0 top-14 z-40 hidden h-[calc(100vh-3.5rem)] w-56 flex-col border-r border-slate-700/50 bg-slate-900/50 lg:flex">
+          <AdminSidebar />
+        </aside>
+
+        <div className="min-h-[calc(100vh-3.5rem)] flex-1 lg:pl-56">
+          <div className="border-b border-slate-700/50 bg-slate-900/30 lg:hidden">
+            <AdminNavMobile />
+          </div>
+          <main className="p-4 sm:p-6 lg:p-8">
+            {children}
+          </main>
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,93 +1,147 @@
-# Quick Setup Guide
+# DR Muhid Lab – Setup Guide
 
-Follow these steps to get your DR Muhid Lab platform running:
+Follow these steps to run the platform locally and connect it to Supabase.
 
-## 1. Install Dependencies
+---
+
+## 1. Install dependencies
+
 ```bash
 npm install
 ```
 
-## 2. Set Up Supabase Database
+---
 
-1. Create a Supabase project at [supabase.com](https://supabase.com)
-2. Open **SQL Editor** in your Supabase dashboard
-3. Copy all contents from `supabase/schema.sql`
-4. Paste and run the SQL in the editor
-5. Verify tables were created in **Table Editor**
+## 2. Supabase project
 
-## 3. Configure Google OAuth
+1. Create a project at [supabase.com](https://supabase.com).
+2. In the dashboard, open **SQL Editor**.
+3. Open `supabase/schema.sql` in this repo and copy its full contents.
+4. Paste into the SQL Editor and **Run**.
+5. In **Table Editor**, confirm that `profiles`, `courses`, `course_images`, `reviews`, `payments`, and `user_course_access` exist.
 
-### In Google Cloud Console:
-1. Go to [console.cloud.google.com](https://console.cloud.google.com)
-2. Create new project
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials (Web application)
-5. Add authorized redirect URI: `https://[YOUR-PROJECT-REF].supabase.co/auth/v1/callback`
-6. Copy **Client ID** and **Client Secret**
+---
 
-### In Supabase Dashboard:
-1. Go to **Authentication > Providers**
-2. Enable **Google**
-3. Paste Client ID and Client Secret
-4. Save
+## 3. Storage bucket (course images)
 
-## 4. Set Environment Variables
+Course images are stored in Supabase Storage. Create the bucket and then apply the storage policies from the schema.
 
-1. Copy `.env.example` to `.env.local`:
+1. In Supabase: **Storage** → **New bucket**.
+2. **Name**: `course-images`.
+3. **Public bucket**: turn **ON** (so course images can be shown without signed URLs).
+4. (Optional) Under **Configuration** set **File size limit** (e.g. 5MB) and **Allowed MIME types** (e.g. `image/jpeg`, `image/png`, `image/webp`, `image/gif`).
+5. Click **Create bucket**.
+
+If you have not yet run the full `schema.sql`, run at least the **Storage** section (the `CREATE POLICY` statements for `storage.objects`). Those policies allow:
+
+- Public read for `course-images`.
+- Only admins to upload, update, and delete objects in `course-images`.
+
+---
+
+## 4. Environment variables
+
+1. Copy the example env file:
    ```bash
    cp .env.example .env.local
    ```
+2. In Supabase: **Settings** → **API**.
+3. In `.env.local` set:
+   - `NEXT_PUBLIC_SUPABASE_URL` = Project URL.
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = anon public key.
+   - `SUPABASE_SERVICE_ROLE_KEY` = service_role key (keep secret).
 
-2. Get your Supabase credentials from **Settings > API**
+---
 
-3. Fill in `.env.local`:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=https://xxxxx.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_service_key
-   ```
+## 5. Google OAuth (optional but recommended)
 
-## 5. Start Development Server
+### Google Cloud Console
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com).
+2. Create or select a project.
+3. Enable **Google+ API** (or the relevant Google identity APIs).
+4. **APIs & Services** → **Credentials** → **Create credentials** → **OAuth 2.0 Client ID**.
+5. Application type: **Web application**.
+6. Under **Authorized redirect URIs** add:
+   `https://<YOUR-PROJECT-REF>.supabase.co/auth/v1/callback`
+   (use your project ref from Supabase URL).
+7. Copy **Client ID** and **Client Secret**.
+
+### Supabase Dashboard
+
+1. **Authentication** → **Providers**.
+2. Enable **Google**.
+3. Paste Client ID and Client Secret → Save.
+
+---
+
+## 6. Auth URL configuration
+
+In Supabase: **Authentication** → **URL Configuration**:
+
+- **Site URL**: `http://localhost:3000` (or your production URL).
+- **Redirect URLs**: add `http://localhost:3000/**` (and your production URL pattern if needed).
+
+---
+
+## 7. Run the app
 
 ```bash
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000).
 
-## 6. Create Admin User
+---
 
-1. Sign in with your Google account (first time)
-2. Go to Supabase **SQL Editor**
-3. Run:
+## 8. Create an admin user
+
+1. Sign in with Google (or your configured auth) so a row is created in `profiles`.
+2. In Supabase **SQL Editor**, run (use your own email):
+
    ```sql
-   UPDATE public.profiles 
-   SET role = 'admin' 
+   UPDATE public.profiles
+   SET role = 'admin'
    WHERE email = 'your-email@example.com';
    ```
-4. Refresh the page - you're now an admin!
 
-## 7. Configure URL Settings
+3. Refresh the app. You should have admin access (e.g. `/admin`).
 
-In Supabase **Authentication > URL Configuration**:
-- **Site URL**: `http://localhost:3000`
-- **Redirect URLs**: Add `http://localhost:3000/**`
+---
 
-## Done! 🎉
+## What you have to do (checklist)
 
-- **Admin**: Access at `/admin`
-- **Customer**: Access at `/dashboard`
+| Step | Action |
+|------|--------|
+| 1 | Run `npm install`. |
+| 2 | Create Supabase project and run `supabase/schema.sql` in SQL Editor. |
+| 3 | In Storage, create a **public** bucket named `course-images`; ensure the storage RLS policies from `schema.sql` are applied. |
+| 4 | Copy `.env.example` to `.env.local` and fill in Supabase URL, anon key, and service role key. |
+| 5 | (Optional) Configure Google OAuth in Google Cloud and in Supabase Auth providers. |
+| 6 | Set Site URL and Redirect URLs in Supabase Auth URL configuration. |
+| 7 | Run `npm run dev` and open the app. |
+| 8 | Sign in once, then set your user’s `profiles.role` to `admin` via SQL. |
 
-## Common Issues
+---
 
-**OAuth not working?**
-- Check redirect URL matches exactly in Google Cloud Console
-- Verify Google provider is enabled in Supabase
+## Course images (behavior)
 
-**Database errors?**
-- Confirm schema.sql ran successfully
-- Check RLS policies are enabled
+- **Thumbnail**: In the course form, use **Upload image** to pick a file; it is uploaded to the `course-images` bucket and the public URL is saved in `courses.thumbnail_url`. You can also paste a URL.
+- **Additional images**: Use **Upload image** to add files to Storage; their URLs are stored in `course_images` (one row per image, with `image_url` and `sort_order`). You can also add image URLs manually with **Add URL** and the URL fields.
+- Only **admins** can upload; the app uses the anon key and relies on RLS so that only users with `role = 'admin'` can insert/update/delete in the `course-images` bucket.
 
-**Admin access denied?**
-- Verify you ran the UPDATE query with your email
-- Check `profiles` table has your user with role='admin'
+---
+
+## Common issues
+
+- **OAuth redirect errors**  
+  Redirect URI in Google Cloud must match exactly the Supabase callback URL (including `/auth/v1/callback`).
+
+- **Database / RLS errors**  
+  Ensure the full `schema.sql` was run and that the storage policies for `storage.objects` are in place.
+
+- **Upload denied (403)**  
+  Confirm the bucket is created, the storage policies from `schema.sql` are applied, and your user has `role = 'admin'` in `profiles`.
+
+- **Admin area not visible**  
+  Check that `profiles.role = 'admin'` for your user and that you’re signed in with that user.

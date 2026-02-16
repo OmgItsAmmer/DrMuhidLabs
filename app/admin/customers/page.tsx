@@ -35,19 +35,20 @@ export default function ManageCustomersPage() {
 
   if (loading && customers.length === 0) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500 dark:text-gray-400">Loading...</p>
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-teal-500 border-r-transparent" />
+          <p className="text-sm text-slate-400">Loading customers...</p>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Manage Customers
-        </h1>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+        <h1 className="text-2xl font-bold text-white sm:text-3xl">Manage Customers</h1>
+        <p className="mt-1 text-sm text-slate-400">
           View customer information and their purchased courses
         </p>
       </div>
@@ -58,29 +59,29 @@ export default function ManageCustomersPage() {
           placeholder="Search by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-md border border-gray-300 px-4 py-2 text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+          className="w-full rounded-xl border border-slate-600 bg-slate-800/50 px-4 py-2.5 text-white placeholder-slate-500 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
         />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-1">
-          <div className="space-y-4">
+          <div className="space-y-2">
             {customers.length === 0 ? (
-              <p className="text-center text-gray-500 dark:text-gray-400">
-                No customers found.
-              </p>
+              <div className="rounded-2xl border border-slate-700/50 bg-slate-800/30 py-12 text-center">
+                <p className="text-slate-400">No customers found.</p>
+              </div>
             ) : (
               customers.map((customer) => (
                 <button
                   key={customer.id}
                   onClick={() => handleSelectCustomer(customer.id)}
-                  className={`w-full rounded-lg p-4 text-left transition-colors ${
+                  className={`w-full rounded-xl border p-4 text-left transition ${
                     selectedCustomer?.id === customer.id
-                      ? 'bg-indigo-50 dark:bg-indigo-900/20'
-                      : 'bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700'
+                      ? 'border-teal-500/50 bg-teal-500/10'
+                      : 'border-slate-700/50 bg-slate-800/30 hover:border-slate-600 hover:bg-slate-800/50'
                   }`}
                 >
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center gap-3">
                     {customer.avatar_url ? (
                       <Image
                         src={customer.avatar_url}
@@ -90,17 +91,15 @@ export default function ManageCustomersPage() {
                         className="rounded-full"
                       />
                     ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-600 text-white font-semibold">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-500/20 text-sm font-semibold text-teal-400">
                         {customer.full_name?.[0] || customer.email[0].toUpperCase()}
                       </div>
                     )}
-                    <div className="flex-1 min-w-0">
-                      <p className="truncate font-medium text-gray-900 dark:text-white">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-medium text-white">
                         {customer.full_name || 'N/A'}
                       </p>
-                      <p className="truncate text-sm text-gray-500 dark:text-gray-400">
-                        {customer.email}
-                      </p>
+                      <p className="truncate text-sm text-slate-400">{customer.email}</p>
                     </div>
                   </div>
                 </button>
@@ -111,57 +110,42 @@ export default function ManageCustomersPage() {
 
         <div className="lg:col-span-2">
           {selectedCustomer ? (
-            <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+            <div className="rounded-2xl border border-slate-700/50 bg-slate-800/30 p-6 shadow-xl">
               <div className="mb-6 flex items-start justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <h2 className="text-xl font-bold text-white">
                     {selectedCustomer.full_name || 'N/A'}
                   </h2>
-                  <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {selectedCustomer.email}
-                  </p>
-                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-500">
-                    Joined{' '}
-                    {new Date(selectedCustomer.created_at).toLocaleDateString()}
+                  <p className="mt-1 text-sm text-slate-400">{selectedCustomer.email}</p>
+                  <p className="mt-2 text-xs text-slate-500">
+                    Joined {new Date(selectedCustomer.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <button
                   onClick={handleCloseDetails}
-                  className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300"
+                  className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-700 hover:text-white"
                 >
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-semibold text-white">
                   Purchased Courses ({customerCourses.length})
                 </h3>
 
                 {customerCourses.length === 0 ? (
-                  <p className="mt-4 text-gray-500 dark:text-gray-400">
-                    No courses purchased yet.
-                  </p>
+                  <p className="mt-4 text-slate-400">No courses purchased yet.</p>
                 ) : (
-                  <div className="mt-4 space-y-4">
+                  <div className="mt-4 space-y-3">
                     {customerCourses.map((course) => (
                       <div
                         key={course.id}
-                        className="flex items-center space-x-4 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+                        className="flex items-center gap-4 rounded-xl border border-slate-700/50 bg-slate-800/50 p-4"
                       >
-                        <div className="relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700">
+                        <div className="relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-slate-700">
                           {course.thumbnail_url ? (
                             <Image
                               src={course.thumbnail_url}
@@ -172,7 +156,7 @@ export default function ManageCustomersPage() {
                           ) : (
                             <div className="flex h-full items-center justify-center">
                               <svg
-                                className="h-6 w-6 text-gray-400"
+                                className="h-6 w-6 text-slate-500"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -187,14 +171,10 @@ export default function ManageCustomersPage() {
                             </div>
                           )}
                         </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-gray-900 dark:text-white">
-                            {course.title}
-                          </p>
-                          {course.price && (
-                            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                              ${course.price}
-                            </p>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-white">{course.title}</p>
+                          {course.price != null && (
+                            <p className="mt-1 text-sm text-teal-400">${course.price}</p>
                           )}
                         </div>
                       </div>
@@ -204,10 +184,8 @@ export default function ManageCustomersPage() {
               </div>
             </div>
           ) : (
-            <div className="flex h-full items-center justify-center rounded-lg bg-gray-50 p-12 dark:bg-gray-800">
-              <p className="text-gray-500 dark:text-gray-400">
-                Select a customer to view details
-              </p>
+            <div className="flex h-64 items-center justify-center rounded-2xl border border-slate-700/50 border-dashed bg-slate-800/20">
+              <p className="text-slate-500">Select a customer to view details</p>
             </div>
           )}
         </div>

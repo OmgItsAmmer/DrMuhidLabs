@@ -312,10 +312,54 @@ CREATE INDEX IF NOT EXISTS idx_user_course_access_user_id ON public.user_course_
 CREATE INDEX IF NOT EXISTS idx_user_course_access_course_id ON public.user_course_access(course_id);
 
 -- =============================================
+-- STORAGE: Course images bucket
+-- =============================================
+-- Create the bucket via Dashboard: Storage > New bucket > name: course-images, Public: ON
+-- Or run once (if your Supabase project supports it):
+--   INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+--   VALUES (
+--     'course-images',
+--     'course-images',
+--     true,
+--     5242880,
+--     ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+--   )
+--   ON CONFLICT (id) DO NOTHING;
+
+-- RLS policies for storage.objects (course-images bucket)
+-- Allow public read (for public bucket, anon can list/read)
+CREATE POLICY "Public read course-images"
+ON storage.objects FOR SELECT
+TO public
+USING (bucket_id = 'course-images');
+
+-- Only admins can upload
+CREATE POLICY "Admins can upload course-images"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'course-images'
+  AND public.is_admin()
+);
+
+-- Only admins can update (e.g. upsert / replace)
+CREATE POLICY "Admins can update course-images"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (bucket_id = 'course-images' AND public.is_admin());
+
+-- Only admins can delete
+CREATE POLICY "Admins can delete course-images"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (bucket_id = 'course-images' AND public.is_admin());
+
+-- =============================================
 -- DONE
 -- =============================================
 -- After running this:
--- 1. Go to Supabase Dashboard > Authentication > Providers
--- 2. Enable Google OAuth and configure credentials
--- 3. After first admin signs up, run:
+-- 1. Create Storage bucket: Dashboard > Storage > New bucket > name: course-images, Public: ON
+-- 2. Go to Supabase Dashboard > Authentication > Providers
+-- 3. Enable Google OAuth and configure credentials
+-- 4. After first admin signs up, run:
 --    UPDATE public.profiles SET role = 'admin' WHERE email = 'admin@example.com';

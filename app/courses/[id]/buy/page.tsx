@@ -41,34 +41,19 @@ export default function BuyCoursePage() {
 
   if (success) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-10 shadow-2xl dark:bg-gray-800">
+      <div className="flex min-h-screen items-center justify-center bg-[#1a1a1d] px-4">
+        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#252528] p-10 shadow-2xl">
           <div className="text-center">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
-              <svg
-                className="h-6 w-6 text-green-600 dark:text-green-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20">
+              <svg className="h-7 w-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2 className="mt-6 text-3xl font-bold text-gray-900 dark:text-white">
-              Payment Submitted!
-            </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Your payment is being verified by our admin team. You will receive
-              access to the course once the payment is confirmed.
+            <h2 className="mt-6 text-3xl font-bold text-white">Payment Submitted!</h2>
+            <p className="mt-2 text-sm text-zinc-400">
+              Your payment is being verified. You will receive access once confirmed.
             </p>
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-500">
-              Redirecting to dashboard...
-            </p>
+            <p className="mt-4 text-sm text-zinc-500">Redirecting to dashboard...</p>
           </div>
         </div>
       </div>
@@ -76,23 +61,18 @@ export default function BuyCoursePage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="w-full max-w-md space-y-8 rounded-xl bg-white p-10 shadow-2xl dark:bg-gray-800">
+    <div className="flex min-h-screen items-center justify-center bg-[#1a1a1d] px-4">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#252528] p-10 shadow-2xl">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900 dark:text-white">
-            Upload Payment Proof
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+          <h2 className="text-center text-3xl font-bold text-white">Upload Payment Proof</h2>
+          <p className="mt-2 text-center text-sm text-zinc-400">
             Enter your transaction ID to verify your payment
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           <div>
-            <label
-              htmlFor="transactionId"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
+            <label htmlFor="transactionId" className="block text-sm font-medium text-zinc-300">
               Transaction ID
             </label>
             <input
@@ -102,29 +82,28 @@ export default function BuyCoursePage() {
               value={transactionId}
               onChange={(e) => setTransactionId(e.target.value)}
               required
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-500"
+              className="mt-1 block w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-zinc-500 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
               placeholder="Enter your transaction ID"
             />
           </div>
 
           {error && (
-            <div className="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
-              <p className="text-sm text-red-800 dark:text-red-400">{error}</p>
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+              <p className="text-sm text-red-400">{error}</p>
             </div>
           )}
 
-          <div className="flex flex-col space-y-3">
+          <div className="flex flex-col gap-3">
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-gradient w-full rounded-xl px-4 py-3 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Submitting...' : 'Submit Payment'}
             </button>
-
             <Link
               href={`/courses/${courseId}`}
-              className="flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+              className="flex w-full justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10"
             >
               Cancel
             </Link>

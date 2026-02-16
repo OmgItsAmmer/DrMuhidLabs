@@ -17,15 +17,12 @@ export default async function CoursePage({
     notFound()
   }
 
-  // Check if user has access
   const userHasAccess = userData ? await hasAccess(id) : false
 
-  // If user has access, redirect to my-courses page to view the video
   if (userHasAccess) {
     redirect(`/dashboard/my-courses`)
   }
 
-  // TypeScript doesn't know notFound() throws, so we assert course is not null
   const validCourse = course
 
   const allImages = [
@@ -34,15 +31,14 @@ export default async function CoursePage({
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-[#1a1a1d]">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="overflow-hidden rounded-lg bg-white shadow-lg dark:bg-gray-800">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#252528] shadow-2xl">
           <div className="grid grid-cols-1 gap-8 p-8 lg:grid-cols-2">
-            {/* Image Gallery */}
             <div className="space-y-4">
               {allImages.length > 0 ? (
                 <>
-                  <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700">
+                  <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-[#1a1a1d]">
                     <Image
                       src={allImages[0]}
                       alt={validCourse.title}
@@ -55,7 +51,7 @@ export default async function CoursePage({
                       {allImages.slice(1, 5).map((img, idx) => (
                         <div
                           key={idx}
-                          className="relative aspect-video overflow-hidden rounded-lg bg-gray-200 dark:bg-gray-700"
+                          className="relative aspect-video overflow-hidden rounded-lg bg-[#1a1a1d]"
                         >
                           <Image
                             src={img}
@@ -69,92 +65,77 @@ export default async function CoursePage({
                   )}
                 </>
               ) : (
-                <div className="flex aspect-video items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-700">
-                  <svg
-                    className="h-20 w-20 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                    />
-                  </svg>
+                <div className="flex aspect-video items-center justify-center rounded-xl bg-gradient-to-br from-orange-500/20 to-purple-500/20">
+                  <span className="text-6xl opacity-60">📚</span>
                 </div>
               )}
             </div>
 
-            {/* Course Details */}
             <div className="space-y-6">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-3xl font-bold text-white">
                   {validCourse.title}
                 </h1>
                 {validCourse.uploaded_by_profile && (
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="mt-2 text-sm text-zinc-400">
                     By {validCourse.uploaded_by_profile.full_name}
                   </p>
                 )}
               </div>
 
-              {validCourse.price && (
-                <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">
+              {validCourse.price != null && (
+                <div className="text-3xl font-bold text-orange-400">
                   ${validCourse.price}
                 </div>
               )}
 
               <div>
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 className="text-lg font-semibold text-white">
                   Description
                 </h2>
-                <p className="mt-2 text-gray-600 dark:text-gray-400">
+                <p className="mt-2 text-zinc-400">
                   {validCourse.description || 'No description available'}
                 </p>
               </div>
 
-              {/* Buy Button */}
               {userData ? (
                 <Link
                   href={`/courses/${validCourse.id}/buy`}
-                  className="block w-full rounded-lg bg-indigo-600 px-6 py-3 text-center text-base font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="btn-gradient block w-full rounded-xl px-6 py-3.5 text-center text-base font-semibold"
                 >
                   Buy Lecture
                 </Link>
               ) : (
                 <Link
                   href="/login"
-                  className="block w-full rounded-lg bg-indigo-600 px-6 py-3 text-center text-base font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="btn-gradient block w-full rounded-xl px-6 py-3.5 text-center text-base font-semibold"
                 >
                   Sign in to Buy
                 </Link>
               )}
 
               <Link
-                href="/dashboard"
-                className="block w-full rounded-lg border border-gray-300 bg-white px-6 py-3 text-center text-base font-semibold text-gray-900 shadow-sm hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+                href="/"
+                className="block w-full rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-center text-base font-semibold text-white transition hover:bg-white/10"
               >
                 Back to Courses
               </Link>
             </div>
           </div>
 
-          {/* Reviews Section */}
           {validCourse.reviews && validCourse.reviews.length > 0 && (
-            <div className="border-t border-gray-200 p-8 dark:border-gray-700">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            <div className="border-t border-white/10 p-8">
+              <h2 className="text-2xl font-bold text-white">
                 Reviews
               </h2>
               <div className="mt-6 space-y-6">
                 {validCourse.reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="rounded-lg bg-gray-50 p-6 dark:bg-gray-700"
+                    className="rounded-xl border border-white/10 bg-white/5 p-6"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center gap-3">
                         {review.profiles?.avatar_url ? (
                           <Image
                             src={review.profiles.avatar_url}
@@ -164,22 +145,22 @@ export default async function CoursePage({
                             className="rounded-full"
                           />
                         ) : (
-                          <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-600 font-semibold text-white">
                             {review.profiles?.full_name?.[0] || 'U'}
                           </div>
                         )}
                         <div>
-                          <p className="font-semibold text-gray-900 dark:text-white">
+                          <p className="font-semibold text-white">
                             {review.profiles?.full_name || 'Anonymous'}
                           </p>
-                          <div className="flex items-center">
+                          <div className="flex items-center gap-0.5">
                             {Array.from({ length: 5 }).map((_, i) => (
                               <svg
                                 key={i}
                                 className={`h-5 w-5 ${
                                   i < review.rating
-                                    ? 'text-yellow-400'
-                                    : 'text-gray-300 dark:text-gray-600'
+                                    ? 'text-amber-400'
+                                    : 'text-zinc-600'
                                 }`}
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
@@ -190,12 +171,12 @@ export default async function CoursePage({
                           </div>
                         </div>
                       </div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-zinc-500">
                         {new Date(review.created_at).toLocaleDateString()}
                       </p>
                     </div>
                     {review.comment && (
-                      <p className="mt-4 text-gray-600 dark:text-gray-300">
+                      <p className="mt-4 text-zinc-300">
                         {review.comment}
                       </p>
                     )}
